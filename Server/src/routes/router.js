@@ -11,14 +11,13 @@ router.get('/', (req, res) => {
   res.send('¡Hola, desde el enrutador!');
 });
 
-// Otras rutas pueden agregarse aquí
-// Rutas para la tabla product *****************************/
+
 router.get("/product/all-products", getAllProductsHandler);
 router.get("/product/:id", getIdHandler);
 router.get("/product/name/:name",getProductsByName);
 router.get("/product/", getProductFilterHandler )
 router.post("/product/",createProductsHandler);
-router.post('/product/restore/:id', restoreProductHandler); // esto es para el borrado logico
+router.post('/product/restore/:id', restoreProductHandler); 
 router.delete("/product/delete/:id", deleteProductsHandler);
 router.put("/product/put/:id", updateProductsHandler);
 router.get("/brands", getBrandHandler)
