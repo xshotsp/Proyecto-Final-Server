@@ -8,6 +8,7 @@
     "start": "npx nodemon index.js",
     "install-prod": "npm install --only=prod"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -24,5 +25,9 @@
     "npm": "^10.2.4",
     "pg": "^8.11.3",
     "sequelize": "^6.35.1"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  
+}
 }
