@@ -1,8 +1,9 @@
-services:
-  - name: my-service
-    commands:
-      build:
-        - npm run install-prod
-        - npm run build
-      run:
-        - npm start
+# railway.toml
+
+[[services]]
+  name = "quirkz"
+  commands = [
+    ["npm", "run", "install-prod"],
+    ["npm", "run", "build"],
+  ]
+  run = ["npm", "start"]

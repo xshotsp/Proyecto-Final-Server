@@ -4,7 +4,7 @@ const { conn } = require('./src/db.js');
 const { apiLoaderProducts } = require("./src/apiLoaderProducts.js");
 const cloudinary = require("cloudinary").v2;
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 
 const app = express();
