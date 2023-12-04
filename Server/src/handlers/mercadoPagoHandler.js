@@ -16,7 +16,7 @@ const createOrder = async (req, res) => {
         let items = cart.map((product) => ({
             title: product.name,
             quantity: product.quantity,
-            unit_price: product.price,
+            unit_price: parseInt (product.price),
             currency_id: "COP",
             picture_url: product.image,
             description: product.description,
