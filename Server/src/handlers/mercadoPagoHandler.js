@@ -17,7 +17,7 @@ const createOrder = async (req, res) => {
             title: product.name,
             quantity: product.quantity,
             unit_price: parseInt (product.price),
-            currency_id: "COP",
+            currency_id: "ARS",
             picture_url: product.image,
             description: product.description,
             colour: product.colour
