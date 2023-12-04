@@ -42,11 +42,11 @@ const putUserHandler = async (req, res) => {
 const createUserHandler = async (req, res) => {
   try {
 
-    let { password, email, profile_picture,} = req.body;
+    let { username, password, email, profile_picture, member } = req.body;
 
 
 
-    if ( !password || !email) {
+    if (!password || !email) {
       return res.status(400).json("Campos obligatorios incompletos.");
     }
 
@@ -61,24 +61,27 @@ const createUserHandler = async (req, res) => {
       },
     });
 
-    if (searchUser.length || searchEmail.length) {
+    if (searchEmail.length) {
+      // if (searchUser.length || searchEmail.length) {
        return res.status(404).json("El usuario o el correo electrónico ya existe.");
     } else {
 
-       // CLOUDINARY
-      if (profile_picture){
-        const cloudinaryUpload = await cloudinary.uploader.upload(`${profile_picture}`);
-        profile_picture = cloudinaryUpload.secure_url;
-      }
+      //  // CLOUDINARY
+      // if (profile_picture){
+      //   const cloudinaryUpload = await cloudinary.uploader.upload(`${profile_picture}`);
+      //   profile_picture = cloudinaryUpload.secure_url;
+      // }
 
       // para encriptar el password
       // const hashedPassword = await bcrypt.hash(password, 10);
       // password = hashedPassword;
 
       const newUser = await User.create({
+        username,
         password,
         email,
         profile_picture,
+        member,
       });
 
 
