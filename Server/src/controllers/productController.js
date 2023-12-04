@@ -53,10 +53,10 @@ const getProductByName = async (name) => {
 /************************************************************************* */
 // se usa para crear el producto
 const createProducts = async (productData) => {
-  
+
   try {
-    // let { name, image, price, colour, additionalImage } = productData;
-    let { name, image, price, colour } = productData;
+    let { name, image, price, colour, additionalImage, brands } = productData;
+    //let { name, image, price, colour } = productData;
 
     const productCreated = await Product.findOne({
       where: { name: name },
@@ -77,7 +77,7 @@ const createProducts = async (productData) => {
         additionalImage[i] = cloudinaryUpload.secure_url;
       }
     }
-   
+
     console.log(additionalImage);
     console.log("controller");
     const newProduct = await Product.create({
@@ -85,7 +85,7 @@ const createProducts = async (productData) => {
       image,
       price,
       colour,
-      //additionalImage,
+      additionalImage,
     });
 
     //crea la asociacion entre producto y marca
@@ -97,7 +97,6 @@ const createProducts = async (productData) => {
     throw error;
   }
 };
-
 /**************************************************************************** */
 
 // para borrar un producto con un id especifico
