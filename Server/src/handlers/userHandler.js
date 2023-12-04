@@ -42,19 +42,19 @@ const putUserHandler = async (req, res) => {
 const createUserHandler = async (req, res) => {
   try {
 
-    let { username, password, email, profile_picture, member } = req.body;
+    let { password, email, profile_picture,} = req.body;
 
 
 
-    if (!username || !password || !email) {
+    if ( !password || !email) {
       return res.status(400).json("Campos obligatorios incompletos.");
     }
 
-    const searchUser = await User.findAll({
-      where: {
-        username: username,
-      },
-    });
+    // const searchUser = await User.findAll({
+    //   where: {
+    //     username: username,
+    //   },
+    // });
     const searchEmail = await User.findAll({
       where: {
         email: email,
@@ -76,11 +76,9 @@ const createUserHandler = async (req, res) => {
       // password = hashedPassword;
 
       const newUser = await User.create({
-        username,
         password,
         email,
         profile_picture,
-        member,
       });
 
 
