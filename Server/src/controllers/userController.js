@@ -5,11 +5,11 @@ const getUser = async (id) => {
     return user
 }
 
-const getUsers = async () => {
+const getAllUsers = async () => {
     const users = await User.findAll()
     return users
 }
 
 
 
-module.exports = { getUser, getUsers}
+module.exports = { getUser,getAllUsers}

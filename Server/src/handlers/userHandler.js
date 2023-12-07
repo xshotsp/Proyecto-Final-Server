@@ -1,4 +1,4 @@
-const { getUser, getOneUser } = require("../controllers/userController");
+const { getUser, getAllUsers } = require("../controllers/userController");
 const { User } = require("../db");
 const transporter = require("../functions/sendMails");
 const cloudinary = require("cloudinary").v2;
@@ -15,6 +15,16 @@ const getUserHandler = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+const getAllUsersHandler = async(req,res)=>{
+  console.log("Si señor")
+  try {
+    const response = await getAllUsers()
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
 const putUserHandler = async (req, res) => {
   try {
@@ -43,10 +53,10 @@ const createUserHandler = async (req, res) => {
   try {
 
     let { username, password, email, profile_picture, member } = req.body;
+console.log(req.body)
 
 
-
-    if (!password || !email) {
+    if (/* !password || */ !email) {
       return res.status(400).json("Campos obligatorios incompletos.");
     }
 
@@ -113,7 +123,6 @@ const createUserHandler = async (req, res) => {
 
 
 const login = async (req, res) => {
-  console.log(req.query)
 
   try {
     const { email, password } = req.query;  
@@ -130,9 +139,7 @@ const login = async (req, res) => {
       return res.status(403).send("Contraseña incorrecta");
     }
     return res.json({
-      access: true,
-      email: user.email,
-      photo: user.profile_picture
+      access: true
     });
   } catch (error) {
     return res.status(500).send(error.message);
@@ -140,4 +147,4 @@ const login = async (req, res) => {
 };
 
 
-module.exports = { getUserHandler, putUserHandler, createUserHandler ,login};
+module.exports = { getUserHandler ,getAllUsersHandler, putUserHandler, createUserHandler ,login};
