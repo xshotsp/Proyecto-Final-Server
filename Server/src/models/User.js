@@ -25,11 +25,10 @@ module.exports = (sequelize) => {
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       provider: {
         type: DataTypes.STRING,
-        allowNull: false,
         defaultValue: "form",
       },
     },

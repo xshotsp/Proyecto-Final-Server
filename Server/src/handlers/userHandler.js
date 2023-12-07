@@ -35,7 +35,7 @@ const putUserHandler = async (req, res) => {
 
 const createUserHandler = async (req, res) => {
   try {
-    const { username, password, email, profile_picture, phone } = req.body;
+    const { username, password, email, profile_picture, phone, provider} = req.body;
 
     if (/* !password || */ !email) {
       return res.status(400).json("Campos obligatorios incompletos.");
