@@ -37,7 +37,6 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 const { Product, Brand, Rewiew, User, Favorite,UserProduct } = sequelize.models;
 
-console.log(sequelize.models);
 
 Product.belongsToMany(Brand, { through: "Product_Brand", timestamps: false });
 Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });

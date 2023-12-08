@@ -1,41 +1,54 @@
 const { User, Product, UserProduct } = require("../db");
 
 const userProductController = {
-  async createRelation({ email, productId, quantity }) {
+  async createRelation({ email, products }) {
     try {
-      // Verificar si el usuario y el producto existen
+      // Verificar si el usuario existe
       const user = await User.findByPk(email);
-      const product = await Product.findByPk(productId);
 
-      if (!user || !product) {
-        throw new Error("Usuario o producto no encontrado");
+      if (!user) {
+        throw new Error("Usuario no encontrado");
       }
 
-      // Verificar si ya existe un CartItem para el usuario y el producto
-      const existingCartItem = await UserProduct.findOne({
+      // Convertir a array si solo se proporciona un producto
+      const productsArray = Array.isArray(products) ? products : [products];
+
+      // Obtener la lista de IDs de productos
+      const productIds = productsArray.map((product) => product.productId);
+
+      // Obtener la lista de productos existentes en la base de datos
+      const existingCartItems = await UserProduct.findAll({
         where: {
           userEmail: email,
-          productId: productId,
+          productId: productIds,
         },
       });
-      if (existingCartItem) {
-        // Si ya existe, puedes actualizar la cantidad o manejarlo según tus necesidades
-        existingCartItem.quantity += quantity;
-        await existingCartItem.save();
 
-        // Devolver la relación existente
-        return existingCartItem;
+      const existingCartItemsMap = existingCartItems.reduce((map, item) => {
+        map[item.productId] = item;
+        return map;
+      }, {});
+
+      // Iterar sobre la lista de productos proporcionada
+      for (const { productId, quantity } of productsArray) {
+        // Verificar si el producto ya existe en el carrito del usuario
+        const existingCartItem = existingCartItemsMap[productId];
+
+        if (existingCartItem) {
+          // Si ya existe, puedes actualizar la cantidad o manejarlo según tus necesidades
+          existingCartItem.quantity += quantity;
+          await existingCartItem.save();
+        } else {
+          // Crear el carrito item y asociarlo al usuario y al producto
+          await UserProduct.create({
+            quantity,
+            userEmail: email,
+            productId: productId,
+          });
+        }
       }
 
-      // Crear el carrito item y asociarlo al usuario y al producto
-      const cartItem = await UserProduct.create({
-        quantity,
-        userEmail: email, // Aquí utilizamos la clave primaria del usuario como identificador
-        productId: productId,
-      });
-
-      // Devolver la relación existente
-      return cartItem;
+      return "Relaciones creadas exitosamente";
     } catch (error) {
       return error.message;
     }
@@ -110,7 +123,7 @@ const userProductController = {
         );
       }
 
-      return "Carrito borrado."
+      return "Carrito borrado.";
     } catch (error) {
       console.error(
         "Error al eliminar las relaciones usuario-producto:",
