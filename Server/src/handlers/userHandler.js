@@ -1,4 +1,4 @@
-const { getUser, getAllUsers } = require("../controllers/userController");
+const { getUser, getAllUsers, updateUser } = require("../controllers/userController");
 const { User } = require("../db");
 const transporter = require("../functions/sendMails");
 const cloudinary = require("cloudinary").v2;
@@ -25,6 +25,7 @@ const getAllUsersHandler = async (req, res) => {
 
 const putUserHandler = async (req, res) => {
   try {
+    console.log ('hola hola')
     const { email } = req.params;
     const newUser = await updateUser(email, req.body);
     return res.status(200).json(newUser);
@@ -35,7 +36,7 @@ const putUserHandler = async (req, res) => {
 
 const createUserHandler = async (req, res) => {
   try {
-    const { username, password, email, profile_picture, phone, provider} = req.body;
+    const { name, lastname, password, email, profile_picture, phone, provider, admin, active} = req.body;
 
     if (/* !password || */ !email) {
       return res.status(400).json("Campos obligatorios incompletos.");
@@ -67,12 +68,15 @@ const createUserHandler = async (req, res) => {
       // password = hashedPassword;
 
       const newUser = await User.create({
-        username,
+        name,
+        lastname,
         password,
         email,
         profile_picture,
         phone,
         provider,
+        admin,
+        active
       });
 
       await transporter.sendMail({
@@ -80,8 +84,8 @@ const createUserHandler = async (req, res) => {
         to: email,
         subject: "Bienvenid@ a QUIRKZ",
         html: ` 
-        <h2>${username}</h2>
-        <p>Mensaje de Bienvenida de nuestra tienda online QUIRKZ</p>
+        <h2>${name}&nbsp;${lastname}</h2>
+        <p>Gracias por preferir nuestra tienda online QUIRKZ</p>
         <p style="font-size: 16px; color: #0074d9;">
       Para ir a la pagina, haz clic <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">aquí</a>.
     </p>`,

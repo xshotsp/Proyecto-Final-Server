@@ -9,9 +9,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      username: {
+      name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+      lastname: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -30,6 +34,14 @@ module.exports = (sequelize) => {
       provider: {
         type: DataTypes.STRING,
         defaultValue: "form",
+      },
+      active:{
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+      admin:{
+        type: DataTypes.BOOLEAN,
+            allowNull: true,
       },
     },
     {
