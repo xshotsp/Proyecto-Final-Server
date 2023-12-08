@@ -35,8 +35,9 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Product, Brand, Rewiew, User, Favorite, User_Product } =
-  sequelize.models;
+const { Product, Brand, Rewiew, User, Favorite,CartItem } = sequelize.models;
+
+console.log(sequelize.models);
 
 Product.belongsToMany(Brand, { through: "Product_Brand", timestamps: false });
 Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
@@ -44,8 +45,15 @@ Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
 Product.belongsToMany(Rewiew, { through: "Product_Rewiew" });
 Rewiew.belongsToMany(Product, { through: "Product_Rewiew" });
 
-User.belongsToMany(Product, { through: User_Product });
-Product.belongsToMany(User, { through: User_Product });
+
+User.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(User, { through: CartItem }); 
+
+User.hasMany(CartItem, { as: 'cartItems' });
+CartItem.belongsTo(User);
+
+Product.hasMany(CartItem, { as: 'cartItems' });
+CartItem.belongsTo(Product);
 
 User.hasMany(Product);
 Product.belongsTo(User);
