@@ -36,6 +36,7 @@ const createOrder = async (req, res) => {
         }
 
         const response = await payment.create(preference)
+        console.log(response)
 
         res.status(200).send(response)
     } catch (error) {

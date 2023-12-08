@@ -53,10 +53,12 @@ const getProductByName = async (name) => {
 /************************************************************************* */
 // se usa para crear el producto
 const createProducts = async (productData) => {
-
+  
+console.log(productData);
   try {
-    let { name, image, price, colour, additionalImage, brands } = productData;
+    let { name, image, price, colour, additionalImage, quantity, active, brands } = productData;
     //let { name, image, price, colour } = productData;
+    
 
     const productCreated = await Product.findOne({
       where: { name: name },
@@ -78,7 +80,7 @@ const createProducts = async (productData) => {
       }
     }
 
-    console.log(additionalImage);
+    
     console.log("controller");
     const newProduct = await Product.create({
       name,
@@ -86,6 +88,8 @@ const createProducts = async (productData) => {
       price,
       colour,
       additionalImage,
+      quantity,
+      active
     });
 
     //crea la asociacion entre producto y marca
@@ -132,7 +136,9 @@ const restoreProductById = async (id) => {
 const updateProductById = async (id, newData) => {
   try {
     // const { name, image, price, colour, additionalImage } = newData;
-    const { name, image, price, colour } = newData;
+    let { name, image, price, colour, quantity } = newData;
+
+    
     const productToUpdate = await Product.findByPk(id);
 
     if (!productToUpdate) {
@@ -140,20 +146,24 @@ const updateProductById = async (id, newData) => {
     }
 
     // CLOUDINARY
-    // const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
-    // const img = cloudinaryUpload.secure_url;
+    if (image){
+      const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
+      image = cloudinaryUpload.secure_url;
+     }
 
     // Actualiza los campos del producto con los nuevos datos
 
-    await productToUpdate.update({
+   await productToUpdate.update({
       id,
       name,
       image,
       price,
       colour,
+      quantity
       //additionalImage,
     });
 
+    
     return productToUpdate;
   } catch (error) {
     throw error;
