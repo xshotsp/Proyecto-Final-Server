@@ -1,4 +1,4 @@
-const { createRelation, getAllRelations,getRelation ,updateRelation } = require("../controllers/productUserController");
+const { createRelation, getAllRelations,getRelation ,updateRelation, deleteRelation } = require("../controllers/productUserController");
 
 const createRelationHandler = async (req, res) => {
   try {
@@ -24,8 +24,18 @@ const getRelationHandler = async(req,res)=>{
 }
 
 const updateRelationHandler = async(req,res)=>{
+  console.log(req.body)
   try {
     const response = await updateRelation(req.body);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+const deleteRelationHandler = async(req,res)=>{
+  try {
+    const response = await deleteRelation(req.params);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -35,5 +45,6 @@ const updateRelationHandler = async(req,res)=>{
 module.exports={
   createRelationHandler,
   getRelationHandler,
-  updateRelationHandler
+  updateRelationHandler,
+  deleteRelationHandler
 }

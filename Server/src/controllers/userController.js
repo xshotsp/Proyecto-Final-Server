@@ -1,4 +1,4 @@
-const { User, CartItem, Product } = require("../db");
+const { User, UserProduct, Product } = require("../db");
 const cloudinary = require("cloudinary").v2;
 
 const getUser = async (email) => {
@@ -7,13 +7,7 @@ const getUser = async (email) => {
 
     const user = await User.findOne({
       where: { email: email },
-      include: [
-        {
-          model: CartItem,
-          as: "cartItems",
-          include: [Product], // Incluimos también la información de los productos
-        },
-      ],
+      include: "products"
     });
 
     return user;

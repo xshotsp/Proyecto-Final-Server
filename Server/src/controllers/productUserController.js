@@ -1,4 +1,4 @@
-const { User, Product, CartItem } = require("../db");
+const { User, Product, UserProduct } = require("../db");
 
 const userProductController = {
   async createRelation({ email, productId, quantity }) {
@@ -12,7 +12,7 @@ const userProductController = {
       }
 
       // Verificar si ya existe un CartItem para el usuario y el producto
-      const existingCartItem = await CartItem.findOne({
+      const existingCartItem = await UserProduct.findOne({
         where: {
           userEmail: email,
           productId: productId,
@@ -28,7 +28,7 @@ const userProductController = {
       }
 
       // Crear el carrito item y asociarlo al usuario y al producto
-      const cartItem = await CartItem.create({
+      const cartItem = await UserProduct.create({
         quantity,
         userEmail: email, // Aquí utilizamos la clave primaria del usuario como identificador
         productId: productId,
@@ -43,7 +43,7 @@ const userProductController = {
 
   async getRelation(userEmail, productId) {
     try {
-      const userProduct = await User_Product.findOne({
+      const userProduct = await UserProduct.findOne({
         where: {
           userEmail: userEmail,
           productId: productId,
@@ -60,7 +60,7 @@ const userProductController = {
   // Obtener todas las relaciones usuario-producto
   async getAllRelations() {
     try {
-      const relations = await User_Product.findAll();
+      const relations = await UserProduct.findAll();
       return relations;
     } catch (error) {
       return error.message;
@@ -68,12 +68,12 @@ const userProductController = {
   },
 
   // Actualizar la cantidad en una relación usuario-producto
-  async updateRelation({ userEmail, productId, quantity }) {
+  async updateRelation({ email, productId, quantity }) {
     try {
       // Verificar si la relación existe
-      const relation = await User_Product.findOne({
+      const relation = await UserProduct.findOne({
         where: {
-          userEmail: userEmail,
+          userEmail: email,
           productId: productId,
         },
       });
@@ -83,8 +83,15 @@ const userProductController = {
       }
 
       // Actualizar la cantidad
-      relation.quantity = quantity || relation.quantity;
-      await relation.save();
+      if (relation.quantity === 1 && !quantity) {
+        await relation.destroy();
+      } else if (quantity) {
+        relation.quantity = quantity;
+        await relation.save();
+      } else {
+        relation.quantity -= 1;
+        await relation.save();
+      }
 
       return relation;
     } catch (error) {
@@ -93,26 +100,23 @@ const userProductController = {
   },
 
   // Eliminar una relación usuario-producto
-  async deleteRelation(req, res) {
+  async deleteRelation({ email }) {
     try {
-      const { relacionId } = req.params;
+      const result = await UserProduct.destroy({ where: { userEmail: email } });
 
-      // Verificar si la relación existe
-      const relacion = await User_Product.findByPk(relacionId);
-
-      if (!relacion) {
-        return res
-          .status(404)
-          .json({ mensaje: "Relación usuario-producto no encontrada" });
+      if (result === 0) {
+        throw new Error(
+          "No se encontraron relaciones usuario-producto para eliminar"
+        );
       }
 
-      // Eliminar la relación
-      await relacion.destroy();
-
-      return res.status(204).send();
+      return "Carrito borrado."
     } catch (error) {
-      console.error("Error al eliminar la relación usuario-producto:", error);
-      return res.status(500).json({ mensaje: "Error interno del servidor" });
+      console.error(
+        "Error al eliminar las relaciones usuario-producto:",
+        error
+      );
+      throw new Error("Error interno del servidor");
     }
   },
 };
