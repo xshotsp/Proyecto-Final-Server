@@ -49,6 +49,7 @@ const {
   /************************************************************* */
   const createProductsHandler = async (req, res) => {
     try {
+    
       const product = await createProducts(req.body);
       res.status(201).json(product);
     } catch (error) {
@@ -96,7 +97,7 @@ const {
 
   const getProductFilterHandler = async (req, res) => {
     try {
-      console.log('hola Handler')
+      
       getProductswithFilter(req, res, () => {
       res.status(200).json(res.paginatedResults);
        });
