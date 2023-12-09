@@ -50,5 +50,5 @@ try {
 };
 
 module.exports = {
-  translate
+  translate,capitalizeString
 }

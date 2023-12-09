@@ -35,6 +35,7 @@ const putUserHandler = async (req, res) => {
 };
 
 const createUserHandler = async (req, res) => {
+  console.log(req.body)
   try {
     const { name, lastname, password, email, profile_picture, phone, provider, admin, active} = req.body;
 

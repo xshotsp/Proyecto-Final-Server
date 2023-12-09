@@ -20,7 +20,7 @@ cloudinary.config({
 conn.sync({ force: false }).then(() => {
   // Cambia la llamada a server.listen por app.listen
   server.listen(PORT, '0.0.0.0', async() => {
-    await apiLoaderProducts()
+/*     await apiLoaderProducts() */
     console.log(`Server listening on port ${PORT}`);
   });
 }).catch(error => console.error(error));

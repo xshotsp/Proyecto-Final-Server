@@ -48,6 +48,7 @@ const {
   
   /************************************************************* */
   const createProductsHandler = async (req, res) => {
+    console.log(req.body)
     try {
     
       const product = await createProducts(req.body);

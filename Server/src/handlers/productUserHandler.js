@@ -1,4 +1,9 @@
-const { createRelation, getAllRelations,getRelation ,updateRelation, deleteRelation } = require("../controllers/productUserController");
+const {
+  createRelation,
+  updateRelation,
+  deleteRelation,
+  getAllProductsUser,
+} = require("../controllers/productUserController");
 
 const createRelationHandler = async (req, res) => {
   try {
@@ -9,42 +14,60 @@ const createRelationHandler = async (req, res) => {
   }
 };
 
-const getRelationHandler = async(req,res)=>{
-  const {userId, productId} = req.query
+
+const cleanResponse = (user) => {
+  const cleanedProducts = user.products.map((product) => {
+    return {
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      colour: product.colour,
+      quantity: product.userProduct.quantity,
+      price: product.price,
+      relationId: product.userProduct.id
+    };
+  });
+
+  // Ordenar por relationId de menor a mayor
+  cleanedProducts.sort((a, b) => a.relationId - b.relationId);
+
+  return cleanedProducts;
+};
+
+
+const getAllProductsUserHandler = async (req, res) => {
   try {
-    if(userEmail,productId){
-      const response = await getRelation(userEmail,productId);
-      return res.status(200).json(response);
-    }
-    const allRelations = await getAllRelations()
-    return res.status(200).json(allRelations)
+    const response = await getAllProductsUser(req.params);
+    const cleanedProducts = cleanResponse(response)
+    return res.status(200).json(cleanedProducts);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
+};
 
-const updateRelationHandler = async(req,res)=>{
-  console.log(req.body)
+const updateRelationHandler = async (req, res) => {
   try {
     const response = await updateRelation(req.body);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
+};
 
-const deleteRelationHandler = async(req,res)=>{
+
+
+const deleteRelationHandler = async (req, res) => {
   try {
     const response = await deleteRelation(req.params);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
+};
 
-module.exports={
+module.exports = {
   createRelationHandler,
-  getRelationHandler,
+  getAllProductsUserHandler,
   updateRelationHandler,
-  deleteRelationHandler
-}
+  deleteRelationHandler,
+};

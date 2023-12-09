@@ -54,33 +54,8 @@ const userProductController = {
     }
   },
 
-  async getRelation(userEmail, productId) {
-    try {
-      const userProduct = await UserProduct.findOne({
-        where: {
-          userEmail: userEmail,
-          productId: productId,
-        },
-      });
-      if (userProduct.dataValues.userEmail) return userProduct.dataValues;
-
-      throw new Error("No existe relacion.");
-    } catch (error) {
-      return error.message;
-    }
-  },
-
-  // Obtener todas las relaciones usuario-producto
-  async getAllRelations() {
-    try {
-      const relations = await UserProduct.findAll();
-      return relations;
-    } catch (error) {
-      return error.message;
-    }
-  },
-
   // Actualizar la cantidad en una relación usuario-producto
+
   async updateRelation({ email, productId, quantity }) {
     try {
       // Verificar si la relación existe
@@ -124,6 +99,26 @@ const userProductController = {
       }
 
       return "Carrito borrado.";
+    } catch (error) {
+      console.error(
+        "Error al eliminar las relaciones usuario-producto:",
+        error
+      );
+      throw new Error("Error interno del servidor");
+    }
+  },
+  async getAllProductsUser({ email }) {
+    try {
+      const user = await User.findOne({
+        where: { email: email },
+        include: "products"
+      });
+
+      if (user === 0) {
+        throw new Error("El usuario no tiene productos en su carrito.");
+      }
+
+      return user;
     } catch (error) {
       console.error(
         "Error al eliminar las relaciones usuario-producto:",
