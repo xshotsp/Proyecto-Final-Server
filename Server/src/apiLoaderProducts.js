@@ -9,7 +9,7 @@ const apiLoaderProducts = async () => {
     store: "US",
     offset: "0",
     categoryId: "4209",
-    limit: "20",
+    limit: "48",
   };
 
   const headers = {
