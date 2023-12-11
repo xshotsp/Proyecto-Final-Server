@@ -6,14 +6,13 @@ const { Op } = require("sequelize");
 //*********************************************************** */
 // trae todos los productos de la base de datos
 const getAllProducts = async () => {
-  const productsDB = await Product.findAll({where: {active: true},
+  const productsDB = await Product.findAll({
     include: {
       model: Brand,
       through: { attributes: [] },
     },
   });
 
-  console.log('Soy yo')
   return productsDB;
 };
 //*********************************************************** */
@@ -177,7 +176,7 @@ const getProductswithFilter = async (req, res, next) => {
 
   //Selecciona aquellos activos
 
-  whereConditions.active = true;
+  // whereConditions.active = true;
   
   // Agrega condiciones al objeto según los parámetros de consulta
   if (name) {
