@@ -6,7 +6,7 @@ const getUser = async (email) => {
     return user
 }
 
-const getAllUsers = async () => {
+const getUsers = async () => {
     const users = await User.findAll()
     return users
 }
@@ -17,7 +17,7 @@ const updateUser = async (email, newData) => {
         const usertoUpdate = await User.findByPk(email);
 
         if (!usertoUpdate) {
-            throw new Error(`Usuario con email ${email} no se encontró`);
+            throw new Error(`User with email ${email} not found`);
         }
 
         let { profile_picture} = newData;
@@ -39,4 +39,4 @@ const updateUser = async (email, newData) => {
 
 
 
-module.exports = { getUser,getAllUsers,updateUser}
+module.exports = { getUser, getUsers, updateUser}
