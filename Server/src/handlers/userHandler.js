@@ -16,6 +16,14 @@ const getUserHandler = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+const getAllUsersHandler = async (req, res) => {
+  try {
+    const response = await getAllUsers();
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 const putUserHandler = async (req, res) => {
   try {
@@ -114,4 +122,4 @@ const login = async (req, res) => {
 };
 
 
-module.exports = { getUserHandler, putUserHandler, createUserHandler ,login};
+module.exports = { getUserHandler,getAllUsersHandler, putUserHandler, createUserHandler ,login};
