@@ -1,6 +1,6 @@
 const axios = require("axios");
 const { Product, Brand, Product_Brand } = require("./db"); // Asumo que ProductBrand es el modelo de la tabla intermedia
-const { translate } = require("./colorTranslate");
+const { translate, capitalizeString } = require("./colorTranslate");
 const { API_KEY } = process.env;
 const cloudinary = require("cloudinary").v2;
 
@@ -31,7 +31,7 @@ const apiLoaderProducts = async () => {
         brandName,
       }) => {
 
-         const colorTranslated = await translate(colour)
+        //  const colorTranslated = await translate(colour)
 
         const [product] = await Product.findOrCreate({
           where: {
@@ -40,19 +40,19 @@ const apiLoaderProducts = async () => {
             // image: imageUrl,
 
             price: price.current.value.toFixed(2),
-            colour:colorTranslated || colour,
-            active: true,
-            quantity: Math.floor(Math.random()*20 + 1)
+            colour:colour,
+            // active: true,
+            // quantity: Math.floor(Math.random()*20 + 1)
             //additionalImage: additionalImageUrls,
           },
         });
 
-
+        const brandCapitalized = await capitalizeString(brandName)
 
         // Busca o crea la marca
         const [brand] = await Brand.findOrCreate({
           where: {
-            name: brandName,
+            name: brandCapitalized,
           },
         });
 

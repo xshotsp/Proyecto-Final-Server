@@ -6,7 +6,7 @@ const { Op } = require("sequelize");
 //*********************************************************** */
 // trae todos los productos de la base de datos
 const getAllProducts = async () => {
-  const productsDB = await Product.findAll({where: {active: true},
+  const productsDB = await Product.findAll({
     include: {
       model: Brand,
       through: { attributes: [] },
@@ -43,7 +43,7 @@ const getProductByName = async (name) => {
   });
   if (productDB.length === 0) {
     return [
-      { message: "No se encontraron productos que coincidan con la búsqueda." },
+      { message: "No products found matching your search." },
     ];
   }
 
@@ -54,17 +54,15 @@ const getProductByName = async (name) => {
 // se usa para crear el producto
 const createProducts = async (productData) => {
   
-console.log(productData);
   try {
-    let { name, image, price, colour, additionalImage, quantity, active, brands } = productData;
+    let { name, image, price, colour, additionalImage, brands } = productData;
     //let { name, image, price, colour } = productData;
-    
 
     const productCreated = await Product.findOne({
       where: { name: name },
     });
     if (productCreated) {
-      throw new Error("Un producto ya existe con ese nombre");
+      throw new Error("A product already exists with that name");
     }
 
     // CLOUDINARY
@@ -79,8 +77,8 @@ console.log(productData);
         additionalImage[i] = cloudinaryUpload.secure_url;
       }
     }
-
-    
+   
+    console.log(additionalImage);
     console.log("controller");
     const newProduct = await Product.create({
       name,
@@ -88,8 +86,6 @@ console.log(productData);
       price,
       colour,
       additionalImage,
-      quantity,
-      active
     });
 
     //crea la asociacion entre producto y marca
@@ -101,6 +97,7 @@ console.log(productData);
     throw error;
   }
 };
+
 /**************************************************************************** */
 
 // para borrar un producto con un id especifico
@@ -109,12 +106,12 @@ const deleteProductById = async (id) => {
     const productToDelete = await Product.findByPk(id);
 
     if (!productToDelete) {
-      throw new Error(`Producto con ID ${id} no encontrado.`);
+      throw new Error(`Product with ID ${id} not found.`);
     }
 
     await productToDelete.destroy();
 
-    return `Producto con ID ${id} eliminado exitosamente.`;
+    return `Product with ID ${id} successfully removed.`;
   } catch (error) {
     throw error;
   }
@@ -139,34 +136,28 @@ const restoreProductById = async (id, newData ) => {
 const updateProductById = async (id, newData) => {
   try {
     // const { name, image, price, colour, additionalImage } = newData;
-    let { name, image, price, colour, quantity } = newData;
-
-    
+    const { name, image, price, colour } = newData;
     const productToUpdate = await Product.findByPk(id);
 
     if (!productToUpdate) {
-      throw new Error(`Producto con ID ${id} no encontrado.`);
+      throw new Error(`Product with ID ${id} not found.`);
     }
 
     // CLOUDINARY
-    if (image){
-      const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
-      image = cloudinaryUpload.secure_url;
-     }
+    // const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
+    // const img = cloudinaryUpload.secure_url;
 
     // Actualiza los campos del producto con los nuevos datos
 
-   await productToUpdate.update({
+    await productToUpdate.update({
       id,
       name,
       image,
       price,
       colour,
-      quantity
       //additionalImage,
     });
 
-    
     return productToUpdate;
   } catch (error) {
     throw error;
@@ -185,7 +176,7 @@ const getProductswithFilter = async (req, res, next) => {
 
   //Selecciona aquellos activos
 
-  whereConditions.active = true;
+  // whereConditions.active = true;
   
   // Agrega condiciones al objeto según los parámetros de consulta
   if (name) {
@@ -226,7 +217,7 @@ const getProductswithFilter = async (req, res, next) => {
     }
 
 
-    if (products.length === 0) products = [{message: "No se encontraron productos que coincidan con la búsqueda."}]
+    if (products.length === 0) products = [{message: "No products found matching your search."}]
 
     
     res.paginatedResults = products;
