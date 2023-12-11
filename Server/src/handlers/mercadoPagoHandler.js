@@ -27,7 +27,7 @@ const createOrder = async (req, res) => {
             body:{
                 items: items,
                 "back_urls": {
-                    "success": "https://localhost:5173/success",
+                    "success": "http://localhost:5173/",
                     "failure": "https://quirkzmain.vercel.app",
                     "pending": ""
                 },
