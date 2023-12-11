@@ -31,7 +31,7 @@ const apiLoaderProducts = async () => {
         brandName,
       }) => {
 
-         const colorTranslated = await translate(colour)
+        //  const colorTranslated = await translate(colour)
 
         const [product] = await Product.findOrCreate({
           where: {
