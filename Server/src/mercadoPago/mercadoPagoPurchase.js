@@ -1,5 +1,8 @@
 require ("dotenv").config()
 const {MercadoPagoConfig, Preference} = require("mercadopago")
+const { createClient } = require("./clients")
+const { createPayment } = require("./payment")
+const { createMerchantOrder } = require("./merchantOrder")
 const {ACCESS_TOKEN}=  process.env;
 
 const client = new MercadoPagoConfig({
@@ -16,7 +19,7 @@ const createOrder = async (req, res) => {
         let items = cart.map((product) => ({
             title: product.name,
             quantity: product.quantity,
-            unit_price: parseInt (product.price),
+            unit_price: parseInt(product.price),
             currency_id: "ARS",
             picture_url: product.image,
             description: product.description,
@@ -25,18 +28,34 @@ const createOrder = async (req, res) => {
 
         let preference = {
             body:{
-                items: items,
+                "external_reference": payer.email,
+                 items: items,
                 "back_urls": {
-                    "success": "https://quirkzmain.vercel.app",
-                    "failure": "https://quirkzmain.vercel.app",
+                    "success": "http://localhost:5173/",
+                    "failure": "http://localhost:5173/",
                     "pending": ""
                 },
                 auto_return: "approved",
+                marketplace: "QUIRKZ",
+                statement_descriptor: "QUIRKZ",
+                payment_methods: {
+                excluded_payment_types: [
+                    {
+                    id: 'ticket',
+                    },
+                ],
+            },
+                binary_mode: true,
+                payer: {
+                    createClient,
+                },
+                createPayment,
+                createMerchantOrder
             }
         }
+        
 
         const response = await payment.create(preference)
-        console.log(response)
 
         res.status(200).send(response)
     } catch (error) {

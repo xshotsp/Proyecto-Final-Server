@@ -5,7 +5,7 @@ const {getAllProductsHandler, getIdHandler, getProductsByName, getProductFilterH
   deleteProductsHandler,updateProductsHandler, restoreProductHandler} = require("../handlers/productHandler")
 const { getBrandHandler } = require("../handlers/brandHandler")
 const {getUserHandler, putUserHandler, createUserHandler, getAllUsersHandler} = require("../handlers/userHandler");
-const { createOrder, successfulPurchase  } = require('../handlers/mercadoPagoHandler');
+const { createOrder, successfulPurchase  } = require('../mercadoPago/mercadoPagoPurchase');
 const {login} = require('../handlers/userHandler')
 // Ruta de ejemplo
 router.get('/', (req, res) => {
