@@ -14,7 +14,25 @@ const sequelize = new Sequelize(DATABASE_URL, {
   native: false,
 });
 
+// Manejo de eventos para la conexión a la base de datos
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Conexión exitosa');
+  })
+  .catch((err) => {
+    console.error('Error al conectar:', err);
+  });
 
+// Opcional: Manejo de eventos para errores durante la sincronización de modelos
+sequelize
+  .sync({ force: false }) // Set force to true to drop and re-create tables on every app start
+  .then(() => {
+    console.log('Tablas sincronizadas');
+  })
+  .catch((err) => {
+    console.error('Error al sincronizar tablas:', err);
+  });
 
 const basename = path.basename(__filename);
 
@@ -38,8 +56,7 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Product, Brand, Rewiew, User, Favorite,UserProduct } = sequelize.models;
-
+const { Product, Brand, Rewiew, User, Favorite, UserProduct } = sequelize.models;
 
 Product.belongsToMany(Brand, { through: "Product_Brand", timestamps: false });
 Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
@@ -47,16 +64,14 @@ Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
 Product.belongsToMany(Rewiew, { through: "Product_Rewiew" });
 Rewiew.belongsToMany(Product, { through: "Product_Rewiew" });
 
-
-
-User.belongsToMany(Product, { through: { model: UserProduct, unique: false }, as: 'products' });
-Product.belongsToMany(User, { through: { model: UserProduct, unique: false }, as: 'users' });
-
-
-
-
-/* User.hasMany(Product);
-Product.belongsTo(User); */
+User.belongsToMany(Product, {
+  through: { model: UserProduct, unique: false },
+  as: "products",
+});
+Product.belongsToMany(User, {
+  through: { model: UserProduct, unique: false },
+  as: "users",
+});
 
 Product.belongsToMany(Favorite, {
   through: "Product_Favorite",
@@ -69,5 +84,5 @@ Favorite.belongsToMany(Product, {
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
-  conn: sequelize, // para importart la conexión { conn } = require('./db.js');
+  conn: sequelize, // para importar la conexión { conn } = require('./db.js');
 };
