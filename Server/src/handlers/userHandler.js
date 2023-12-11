@@ -37,6 +37,7 @@ const putUserHandler = async (req, res) => {
 };
 
 const createUserHandler = async (req, res) => {
+  console.log(req.body)
   try {
 
     const { username, password, email, profile_picture, phone } = req.body;
@@ -98,18 +99,20 @@ const login = async (req, res) => {
   console.log(req.query)
 
   try {
-    const { email, password } = req.query;  
+    const { email, password } = req.query;
     if (!email || !password) {
-      return res.status(400).send("Missing data");
+      console.log("faltan datos");
+      throw new Error("Faltan datos");
+
     }
 
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
-      return res.status(404).send("User not found");
+      throw new Error("Usuario no encontrado");
     }
 
     if (user.password !== password) {
-      return res.status(403).send("Incorrect password");
+      throw new Error("Contraseña incorrecta");
     }
     return res.json({
       access: true,
