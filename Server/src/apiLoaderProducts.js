@@ -40,7 +40,9 @@ const apiLoaderProducts = async () => {
             // image: imageUrl,
 
             price: price.current.value.toFixed(2),
-            colour:colorTranslated || colour
+            colour:colorTranslated || colour,
+            active: true,
+            quantity: Math.floor(Math.random()*20 + 1)
             //additionalImage: additionalImageUrls,
           },
         });
