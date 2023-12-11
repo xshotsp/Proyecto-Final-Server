@@ -46,6 +46,16 @@ Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
 Product.belongsToMany(Rewiew, { through: "Product_Rewiew" });
 Rewiew.belongsToMany(Product, { through: "Product_Rewiew" });
 
+
+
+User.belongsToMany(Product, { through: { model: UserProduct, unique: false }, as: 'products' });
+Product.belongsToMany(User, { through: { model: UserProduct, unique: false }, as: 'users' });
+
+
+
+
+/* User.hasMany(Product);
+Product.belongsTo(User); */
 Purchase.belongsTo(User, {through:"Purchase_User"});
 User.belongsToMany(Purchase, {through:"Purchase_User"});
 
