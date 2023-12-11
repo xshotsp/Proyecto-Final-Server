@@ -23,7 +23,6 @@ const apiLoaderProducts = async () => {
     const { data } = await axios.request(URL, { params, headers });
     data.products.forEach(
       async ({
-        id,
         name,
         imageUrl,
         price,
@@ -36,7 +35,6 @@ const apiLoaderProducts = async () => {
 
         const [product] = await Product.findOrCreate({
           where: {
-            idApi:id,
             name,
             image: `https://${imageUrl}`, //hola
             // image: imageUrl,
