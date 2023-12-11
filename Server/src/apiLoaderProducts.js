@@ -40,7 +40,7 @@ const apiLoaderProducts = async () => {
             // image: imageUrl,
 
             price: price.current.value.toFixed(2),
-            colour:colorTranslated || colour
+            colour:colour
             //additionalImage: additionalImageUrls,
           },
         });
