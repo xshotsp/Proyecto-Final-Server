@@ -25,7 +25,7 @@ const getAllUsersHandler = async (req, res) => {
 
 const putUserHandler = async (req, res) => {
   try {
-    console.log ('hola hola')
+    
     const { email } = req.params;
     const newUser = await updateUser(email, req.body);
     return res.status(200).json(newUser);

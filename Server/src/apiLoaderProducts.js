@@ -9,7 +9,7 @@ const apiLoaderProducts = async () => {
     store: "US",
     offset: "0",
     categoryId: "4209",
-    limit: "20",
+    limit: "48",
   };
 
   const headers = {
@@ -31,7 +31,7 @@ const apiLoaderProducts = async () => {
         brandName,
       }) => {
 
-         const colorTranslated = await translate(colour)
+        //  const colorTranslated = await translate(colour)
 
         const [product] = await Product.findOrCreate({
           where: {
@@ -40,7 +40,9 @@ const apiLoaderProducts = async () => {
             // image: imageUrl,
 
             price: price.current.value.toFixed(2),
-            colour:colorTranslated || colour
+            colour:colour,
+            // active: true,
+            // quantity: Math.floor(Math.random()*20 + 1)
             //additionalImage: additionalImageUrls,
           },
         });
