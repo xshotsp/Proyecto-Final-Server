@@ -18,7 +18,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
   native: false,
   dialect: 'postgres',
   host: 'monorail.proxy.rlwy.net', // Cambia a localhost si estás ejecutando PostgreSQL localmente
-  port: 5432,
+  port: 18536,
 });
 sequelize
   .authenticate()
