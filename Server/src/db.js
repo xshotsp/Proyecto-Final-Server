@@ -16,8 +16,6 @@ const path = require("path");
 const sequelize = new Sequelize(DATABASE_URL, {
   logging: false,
   native: false,
-  dialect: 'postgres',
-  port: 18536,
 });
 sequelize
   .authenticate()
