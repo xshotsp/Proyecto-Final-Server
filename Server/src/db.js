@@ -10,8 +10,11 @@ if (!DATABASE_URL) {
 }
 
 const sequelize = new Sequelize(DATABASE_URL, {
-  logging: false,
+  logging: true,
   native: false,
+  dialect: 'postgres',
+  host: 'monorail.proxy.rlwy.net', // Cambia a localhost si estás ejecutando PostgreSQL localmente
+  port: 5432,
 });
 
 // Manejo de eventos para la conexión a la base de datos
