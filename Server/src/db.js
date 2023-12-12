@@ -3,11 +3,15 @@ const { Sequelize } = require("sequelize");
 
 const fs = require("fs");
 const path = require("path");
-const { DATABASE_URL } = process.env;
+ const { DATABASE_URL } = process.env;
+//const { DATABASE_URL } = process.env;
 
-if (!DATABASE_URL) {
-  throw new Error("DATABASE_URL not defined");
-}
+//if (!DATABASE_URL) {
+//throw new Error("DATABASE_URL not defined");
+//}
+// if (!DATABASE_URL) {
+//   throw new Error("DATABASE_URL not defined");
+// }
 
 const sequelize = new Sequelize(DATABASE_URL, {
   logging: true,
@@ -16,8 +20,6 @@ const sequelize = new Sequelize(DATABASE_URL, {
   host: 'monorail.proxy.rlwy.net', // Cambia a localhost si estás ejecutando PostgreSQL localmente
   port: 5432,
 });
-
-// Manejo de eventos para la conexión a la base de datos
 sequelize
   .authenticate()
   .then(() => {
@@ -28,14 +30,14 @@ sequelize
   });
 
 // Opcional: Manejo de eventos para errores durante la sincronización de modelos
-sequelize
+/* sequelize
   .sync({ force: false }) // Set force to true to drop and re-create tables on every app start
   .then(() => {
     console.log('Tablas sincronizadas');
   })
   .catch((err) => {
     console.error('Error al sincronizar tablas:', err);
-  });
+  }); */
 
 const basename = path.basename(__filename);
 
@@ -59,7 +61,8 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Product, Brand, Rewiew, User, Favorite, UserProduct } = sequelize.models;
+const { Product, Brand, Rewiew, User, Favorite,UserProduct ,Purchase} = sequelize.models;
+
 
 Product.belongsToMany(Brand, { through: "Product_Brand", timestamps: false });
 Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
@@ -67,14 +70,18 @@ Brand.belongsToMany(Product, { through: "Product_Brand", timestamps: false });
 Product.belongsToMany(Rewiew, { through: "Product_Rewiew" });
 Rewiew.belongsToMany(Product, { through: "Product_Rewiew" });
 
-User.belongsToMany(Product, {
-  through: { model: UserProduct, unique: false },
-  as: "products",
-});
-Product.belongsToMany(User, {
-  through: { model: UserProduct, unique: false },
-  as: "users",
-});
+
+
+
+User.belongsToMany(Product, { through: { model: UserProduct, unique: false }, as: 'products' });
+Product.belongsToMany(User, { through: { model: UserProduct, unique: false }, as: 'users' });
+
+
+
+Purchase.belongsTo(User, {through:"Purchase_User"});
+User.belongsToMany(Purchase, {through:"Purchase_User"});
+/* User.hasMany(Product);
+Product.belongsTo(User); */
 
 Product.belongsToMany(Favorite, {
   through: "Product_Favorite",
