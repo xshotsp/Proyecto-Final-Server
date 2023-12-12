@@ -3,6 +3,7 @@ const { User } = require("../db");
 const transporter = require("../functions/sendMails");
 const cloudinary = require("cloudinary").v2;
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const getUserHandler = async (req, res) => {
   try {
@@ -99,11 +100,12 @@ const createUserHandler = async (req, res) => {
   }
 };
 
+const secretKey = process.env.JWT_SECRET
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.query;
     if (!email || !password) {
-      console.log("faltan datos");
       throw new Error("Faltan datos");
 
     }
@@ -116,8 +118,10 @@ const login = async (req, res) => {
     if (user.password !== password) {
       throw new Error("Contraseña incorrecta");
     }
+    const token = jwt.sign({email},secretKey,{expiresIn:"1h"})
     return res.json({
       access: true,
+      token:token
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
