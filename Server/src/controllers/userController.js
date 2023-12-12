@@ -6,7 +6,7 @@ const getUser = async (email) => {
        const user = await User.findByPk(email);
     return user;
   } catch (error) {
-    console.error("Error al obtener el usuario:", error);
+    console.error("Error when obtaining the user:", error);
     throw error; // Puedes manejar el error según tus necesidades
   }
 };
@@ -21,7 +21,7 @@ const updateUser = async (email, newData) => {
     const usertoUpdate = await User.findByPk(email);
 
     if (!usertoUpdate) {
-      throw new Error(`Usuario con email ${email} no se encontró`);
+      throw new Error(`User with email ${email} not found`);
     }
 
     let { profile_picture } = newData;

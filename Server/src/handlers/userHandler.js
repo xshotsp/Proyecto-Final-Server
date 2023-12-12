@@ -40,7 +40,7 @@ const createUserHandler = async (req, res) => {
     const { name, lastname, password, email, profile_picture, phone, provider, admin, active} = req.body;
 
     if (/* !password || */ !email) {
-      return res.status(400).json("Campos obligatorios incompletos.");
+      return res.status(400).json("Incomplete required fields.");
     }
 
     const searchEmail = await User.findAll({
@@ -54,13 +54,13 @@ const createUserHandler = async (req, res) => {
         return res
           .status(404)
           .json(
-            "El usuario o correo electronico ya esta registrado con una cuenta de google."
+            "The user or email is already registered with a Google account."
           );
       }
 
       return res
         .status(404)
-        .json("El usuario o el correo electrónico ya existe.");
+        .json("The email already exists.");
     } else {
 
 
@@ -81,14 +81,14 @@ const createUserHandler = async (req, res) => {
       });
 
       await transporter.sendMail({
-        from: "mensaje enviado por <quirkz41@gmail.com>",
+        from: "Message sent by <quirkz41@gmail.com>",
         to: email,
-        subject: "Bienvenid@ a QUIRKZ",
+        subject: "Welcome to QUIRKZ",
         html: ` 
         <h2>${name}&nbsp;${lastname}</h2>
-        <p>Gracias por preferir nuestra tienda online QUIRKZ</p>
+        <p>Thank you for choosing our online store QUIRKZ</p>
         <p style="font-size: 16px; color: #0074d9;">
-      Para ir a la pagina, haz clic <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">aquí</a>.
+        To go to the page, click <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">here</a>.
     </p>`,
       });
 
@@ -104,17 +104,17 @@ const login = async (req, res) => {
     const { email, password } = req.query;
     if (!email || !password) {
       console.log("faltan datos");
-      throw new Error("Faltan datos");
+      throw new Error("Missing data");
 
     }
 
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
-      throw new Error("Usuario no encontrado");
+      throw new Error("User not found");
     }
 
     if (user.password !== password) {
-      throw new Error("Contraseña incorrecta");
+      throw new Error("Incorrect password");
     }
     return res.json({
       access: true,
