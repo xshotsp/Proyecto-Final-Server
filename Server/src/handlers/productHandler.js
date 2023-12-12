@@ -23,11 +23,16 @@ const getProductsByName = async (req, res) => {
 
 /********************************************************** */
 
+const sortProducts = (array)=>{
+  return array.sort((a, b) => a.id - b.id);
+}
+
 const getAllProductsHandler = async (req, res) => {
   try {
   
     const results = await getAllProducts(req, res);
-    res.status(200).json(results);
+    const productsSorted = await sortProducts(results)
+    res.status(200).json(productsSorted);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

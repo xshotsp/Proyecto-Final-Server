@@ -13,9 +13,9 @@ const createPurchaseHandler = async (req, res) => {
   const purchaseByUserHandler = async (req, res) => {
     const {email} = req.params;
     try {
-      console.log('cali')
-      // const response = await getPurchaseByEmail(email);
-      // res.status(200).send(response);
+
+       const response = await getPurchaseByEmail(email);
+       res.status(200).send(response);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

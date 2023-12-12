@@ -1,4 +1,4 @@
-const { getUser, getAllUsers, updateUser } = require("../controllers/userController");
+const { getUser, getAllUsers, updateUser, restoreUserById } = require("../controllers/userController");
 const { User } = require("../db");
 const transporter = require("../functions/sendMails");
 const cloudinary = require("cloudinary").v2;
@@ -15,10 +15,18 @@ const getUserHandler = async (req, res) => {
   }
 };
 
+
+const sortUsers = (array) => {
+  return array.sort((a, b) => a.email.localeCompare(b.email));
+};
+
+
+
 const getAllUsersHandler = async (req, res) => {
   try {
     const response = await getAllUsers();
-    res.status(200).json(response);
+    const sortedUsers = await sortUsers(response)
+    res.status(200).json(sortedUsers);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -36,11 +44,10 @@ const putUserHandler = async (req, res) => {
 };
 
 const createUserHandler = async (req, res) => {
-  console.log(req.body)
   try {
     const { name, lastname, password, email, profile_picture, phone, provider, admin, active} = req.body;
-
-    if (/* !password || */ !email) {
+    console.log(email)
+    if (!email) {
       return res.status(400).json("Campos obligatorios incompletos.");
     }
 
@@ -128,10 +135,25 @@ const login = async (req, res) => {
   }
 };
 
+const restoreUserHandler = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await restoreUserById(id);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getUserHandler,
   getAllUsersHandler,
   putUserHandler,
   createUserHandler,
   login,
+  restoreUserHandler
 };

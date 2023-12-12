@@ -43,4 +43,17 @@ const updateUser = async (email, newData) => {
   }
 };
 
-module.exports = { getUser, getAllUsers, updateUser };
+const restoreUserById = async (id) => {
+  try {
+    const restoredUser = await User.findByPk(id);
+
+    restoredUser.active = !restoredUser.active;
+    await restoredUser.save();
+
+    return restoredUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { getUser, getAllUsers, updateUser,restoreUserById };
