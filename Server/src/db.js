@@ -14,7 +14,7 @@ const path = require("path");
 // }
 
 const sequelize = new Sequelize(DATABASE_URL, {
-  logging: true,
+  logging: false,
   native: false,
   dialect: 'postgres',
   host: 'monorail.proxy.rlwy.net', // Cambia a localhost si estás ejecutando PostgreSQL localmente
