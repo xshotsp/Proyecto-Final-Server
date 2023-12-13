@@ -1,9 +1,14 @@
-const { getUser, getAllUsers, updateUser, restoreUserById } = require("../controllers/userController");
+const {
+  getUser,
+  getAllUsers,
+  updateUser,
+  restoreUserById,
+} = require("../controllers/userController");
 const { User } = require("../db");
 const transporter = require("../functions/sendMails");
 const cloudinary = require("cloudinary").v2;
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const getUserHandler = async (req, res) => {
   try {
@@ -15,17 +20,14 @@ const getUserHandler = async (req, res) => {
   }
 };
 
-
 const sortUsers = (array) => {
   return array.sort((a, b) => a.email.localeCompare(b.email));
 };
 
-
-
 const getAllUsersHandler = async (req, res) => {
   try {
     const response = await getAllUsers();
-    const sortedUsers = await sortUsers(response)
+    const sortedUsers = await sortUsers(response);
     res.status(200).json(sortedUsers);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -34,7 +36,6 @@ const getAllUsersHandler = async (req, res) => {
 
 const putUserHandler = async (req, res) => {
   try {
-    
     const { email } = req.params;
     const newUser = await updateUser(email, req.body);
     return res.status(200).json(newUser);
@@ -45,10 +46,20 @@ const putUserHandler = async (req, res) => {
 
 const createUserHandler = async (req, res) => {
   try {
-    const { name, lastname, password, email, profile_picture, phone, provider, admin, active} = req.body;
-    console.log(email)
+    const {
+      name,
+      lastname,
+      password,
+      email,
+      profile_picture,
+      phone,
+      provider,
+      admin,
+      active,
+    } = req.body;
+    console.log(email);
     if (!email) {
-      return res.status(400).json("Campos obligatorios incompletos.");
+      return res.status(400).json("Incomplete required fields.");
     }
 
     const searchEmail = await User.findAll({
@@ -62,16 +73,14 @@ const createUserHandler = async (req, res) => {
         return res
           .status(404)
           .json(
-            "El usuario o correo electronico ya esta registrado con una cuenta de google."
+            "The user or email is already registered with a Google account."
           );
       }
 
       return res
         .status(404)
-        .json("El usuario o el correo electrónico ya existe.");
+        .json("The user or email already exists.");
     } else {
-
-
       // para encriptar el password
       // const hashedPassword = await bcrypt.hash(password, 10);
       // password = hashedPassword;
@@ -85,18 +94,18 @@ const createUserHandler = async (req, res) => {
         phone,
         provider,
         admin,
-        active
+        active,
       });
 
       await transporter.sendMail({
-        from: "mensaje enviado por <quirkz41@gmail.com>",
+        from: "Message sent by <quirkz41@gmail.com>",
         to: email,
-        subject: "Bienvenid@ a QUIRKZ",
+        subject: "Welcome to QUIRKZ",
         html: ` 
         <h2>${name}&nbsp;${lastname}</h2>
-        <p>Gracias por preferir nuestra tienda online QUIRKZ</p>
+        <p>Thank you for choosing our online store QUIRKZ</p>
         <p style="font-size: 16px; color: #0074d9;">
-      Para ir a la pagina, haz clic <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">aquí</a>.
+        To go to the page, click  <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">Here</a>.
     </p>`,
       });
 
@@ -107,28 +116,27 @@ const createUserHandler = async (req, res) => {
   }
 };
 
-const secretKey = process.env.JWT_SECRET
+const secretKey = process.env.JWT_SECRET;
 
 const login = async (req, res) => {
   try {
     const { email, password } = req.query;
     if (!email || !password) {
-      throw new Error("Faltan datos");
-
+      throw new Error("Missing data.");
     }
 
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
-      throw new Error("Usuario no encontrado");
+      throw new Error("User not found.");
     }
 
     if (user.password !== password) {
-      throw new Error("Contraseña incorrecta");
+      throw new Error("Incorrect password.");
     }
-    const token = jwt.sign({email},secretKey,{expiresIn:"1h"})
+    const token = jwt.sign({ email }, secretKey, { expiresIn: "1h" });
     return res.json({
       access: true,
-      token:token
+      token: token,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -142,7 +150,7 @@ const restoreUserHandler = async (req, res) => {
     if (user) {
       res.status(200).json(user);
     } else {
-      res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -155,5 +163,5 @@ module.exports = {
   putUserHandler,
   createUserHandler,
   login,
-  restoreUserHandler
+  restoreUserHandler,
 };
