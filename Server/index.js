@@ -2,6 +2,7 @@ const server = require("./src/server");
 const express = require("express");
 const { conn } = require("./src/db.js");
 const { apiLoaderProducts } = require("./src/apiLoaderProducts.js");
+const { createAdmin } = require("./src/createAdmin.js");
 const cloudinary = require("cloudinary").v2;
 const { CLOUD_NAME, API_CLOUD_KEY, API_SECRET } = process.env
 
@@ -18,11 +19,12 @@ cloudinary.config({
 });
 
 conn
-  .sync({ force: true })
+  .sync({ force: false })
   .then(() => {
     // Cambia la llamada a server.listen por app.listen
     server.listen(PORT, "0.0.0.0", async () => {
-      await apiLoaderProducts();
+       await apiLoaderProducts();
+       await createAdmin(); 
       console.log(`Server listening on port ${PORT}`);
     });
   })

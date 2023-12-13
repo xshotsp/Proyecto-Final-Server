@@ -27,18 +27,24 @@ module.exports = (sequelize) => {
     },
     additionalImage: {
       type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,    
+      allowNull: true,
     },
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: true,
+      defaultValue: () => Math.floor(Math.random() * 30) + 1, // Valor predeterminado aleatorio entre 1 y 30
+      validate: {
+        isInt: {
+          args: [1, 30],
+          msg: 'Quantity must be a number in the range of 1 to 30',
+        },
+      },
     },
-    active:{
+    active: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
-   
-  },{
+  }, {
     timestamps: false
   });
 };

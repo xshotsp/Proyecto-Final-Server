@@ -7,7 +7,7 @@ const userProductController = {
       const user = await User.findByPk(email);
 
       if (!user) {
-        throw new Error("User not found");
+        throw new Error("User not found.");
       }
 
       // Convertir a array si solo se proporciona un producto
@@ -48,7 +48,7 @@ const userProductController = {
         }
       }
 
-      return "Connections created successfully";
+      return "Connections created successfully.";
     } catch (error) {
       return error.message;
     }
@@ -101,10 +101,10 @@ const userProductController = {
       return "Deleted shopping cart.";
     } catch (error) {
       console.error(
-        "Failed to delete user-product connections:",
+        "Failed to delete user-product connections.",
         error
       );
-      throw new Error("Error internal server");
+      throw new Error("Error internal server.");
     }
   },
   async getAllProductsUser({ email }) {
@@ -123,8 +123,8 @@ const userProductController = {
       console.error(
         "Failed to delete user-product relationships:",
         error
-      );
-      throw new Error("Error internal server");
+      );       
+      throw new Error("Error internal server.");
     }
   },
 };
