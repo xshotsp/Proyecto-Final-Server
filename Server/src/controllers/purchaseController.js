@@ -25,14 +25,14 @@ const createPurchase = async (productData) => {
             subject: "Information QUIRKZ Buy Order",
             html: ` 
             <h3>User</h3>
-            <h3>${name}&nbsp;${lastname}</h3>
+            <h3>${email}</h3>
             <h2>Order: ${order} </h2>
             <h3>Date: ${date} </h3>
             <h3>Total: $${totalAmount}</h3>
             <h3>Currency: COP</h3>
             <h3>Status: Paid</h3>
             <p style="font-size: 16px; color: #0074d9;">
-          Para ir a la pagina, haz clic <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">aquí</a>.
+          For going to web page, do click <a href="https://quirkzmain.vercel.app/" style="text-decoration: none; color: #ff4136; font-weight: bold;">here</a>.
         </p>`,
           });
     
@@ -48,4 +48,8 @@ const createPurchase = async (productData) => {
       return purchaseDB;
     };
 
-    module.exports = {createPurchase, getPurchaseByEmail}
+    const getAllPurchase = async () => {
+      const purchaseDB = await Purchase.findAll()
+      return purchaseDB;
+    };
+    module.exports = {createPurchase, getPurchaseByEmail, getAllPurchase}
