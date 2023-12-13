@@ -13,15 +13,17 @@ const createPurchaseHandler = async (req, res) => {
   }
 };
 
-const purchaseByUserHandler = async (req, res) => {
-  const { email } = req.params;
-  try {
-    const response = await getPurchaseByEmail(email);
-    res.status(200).send(response);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+  const purchaseByUserHandler = async (req, res) => {
+    const {email} = req.params;
+    try {
+      
+      const response = await getPurchaseByEmail(email);
+      res.status(200).send(response);
+
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
 
 const purchaseHandler = async (req, res) => {
   try {
