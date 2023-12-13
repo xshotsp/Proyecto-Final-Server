@@ -135,8 +135,7 @@ const restoreProductById = async (id) => {
 // Para editar o actualizar un producto con un id especifico
 const updateProductById = async (id, newData) => {
   try {
-    // const { name, image, price, colour, additionalImage } = newData;
-    const { name, image, price, colour } = newData;
+    let { name, image, price, colour, quantity } = newData;
     const productToUpdate = await Product.findByPk(id);
 
     if (!productToUpdate) {
@@ -144,8 +143,10 @@ const updateProductById = async (id, newData) => {
     }
 
     // CLOUDINARY
-    // const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
-    // const img = cloudinaryUpload.secure_url;
+    if (image){
+      const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
+      image = cloudinaryUpload.secure_url;
+     }
 
     // Actualiza los campos del producto con los nuevos datos
 
@@ -155,6 +156,7 @@ const updateProductById = async (id, newData) => {
       image,
       price,
       colour,
+      quantity
       //additionalImage,
     });
 

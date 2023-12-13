@@ -22,8 +22,8 @@ conn
   .then(() => {
     // Cambia la llamada a server.listen por app.listen
     server.listen(PORT, "0.0.0.0", async () => {
-      await apiLoaderProducts();
-      await createAdmin();
+       await apiLoaderProducts();
+       await createAdmin(); 
       console.log(`Server listening on port ${PORT}`);
     });
   })

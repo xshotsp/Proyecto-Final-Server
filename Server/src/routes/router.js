@@ -8,7 +8,7 @@ const {getUserHandler, putUserHandler, createUserHandler, getAllUsersHandler, re
 const { createOrder, successfulPurchase  } = require('../handlers/mercadoPagoHandler');
 const {login} = require('../handlers/userHandler');
 const { createRelationHandler, updateRelationHandler, deleteRelationHandler, getAllProductsUserHandler } = require('../handlers/productUserHandler');
-const {createPurchaseHandler, purchaseByUserHandler} = require('../handlers/purchaseHandler')
+const {createPurchaseHandler, purchaseByUserHandler,purchaseHandler} = require('../handlers/purchaseHandler')
 // Ruta de ejemplo
 router.get('/', (req, res) => {
   res.send('¡Hola, desde el enrutador!');
@@ -39,6 +39,7 @@ router.put("/cart",updateRelationHandler)
 router.delete("/cart/:email",deleteRelationHandler)
 router.post("/history", createPurchaseHandler)
 router.get("/purchase/:email", purchaseByUserHandler)
+router.get("/purchases/all", purchaseHandler)
 
 
 module.exports = router;

@@ -48,4 +48,9 @@ const createPurchase = async (productData) => {
       return purchaseDB;
     };
 
-    module.exports = {createPurchase, getPurchaseByEmail}
+    const getAllPurchase = async () => {
+      const purchaseDB = await Purchase.findAll();
+      return purchaseDB;
+    };
+
+    module.exports = {createPurchase, getPurchaseByEmail,getAllPurchase}
