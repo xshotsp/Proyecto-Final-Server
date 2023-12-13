@@ -32,7 +32,7 @@ const apiLoaderProducts = async () => {
       }) => {
 
         //  const colorTranslated = await translate(colour)
-
+        const colorCapitalized = await capitalizeString(colour)
         const [product] = await Product.findOrCreate({
           where: {
             name,
@@ -40,9 +40,9 @@ const apiLoaderProducts = async () => {
             // image: imageUrl,
 
             price: price.current.value.toFixed(2),
-            colour:colour,
-            // active: true,
-            // quantity: Math.floor(Math.random()*20 + 1)
+            colour:colorCapitalized,
+            active: true,
+            quantity: Math.floor(Math.random()*20 + 1)
             //additionalImage: additionalImageUrls,
           },
         });

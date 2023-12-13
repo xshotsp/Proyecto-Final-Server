@@ -1,8 +1,9 @@
-const { getUser, getAllUsers, updateUser } = require("../controllers/userController");
+const { getUser, getAllUsers, updateUser, restoreUserById } = require("../controllers/userController");
 const { User } = require("../db");
 const transporter = require("../functions/sendMails");
 const cloudinary = require("cloudinary").v2;
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const getUserHandler = async (req, res) => {
   try {
@@ -14,10 +15,18 @@ const getUserHandler = async (req, res) => {
   }
 };
 
+
+const sortUsers = (array) => {
+  return array.sort((a, b) => a.email.localeCompare(b.email));
+};
+
+
+
 const getAllUsersHandler = async (req, res) => {
   try {
     const response = await getAllUsers();
-    res.status(200).json(response);
+    const sortedUsers = await sortUsers(response)
+    res.status(200).json(sortedUsers);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -35,11 +44,10 @@ const putUserHandler = async (req, res) => {
 };
 
 const createUserHandler = async (req, res) => {
-  console.log(req.body)
   try {
     const { name, lastname, password, email, profile_picture, phone, provider, admin, active} = req.body;
-
-    if (/* !password || */ !email) {
+    console.log(email)
+    if (!email) {
       return res.status(400).json("Campos obligatorios incompletos.");
     }
 
@@ -99,11 +107,12 @@ const createUserHandler = async (req, res) => {
   }
 };
 
+const secretKey = process.env.JWT_SECRET
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.query;
     if (!email || !password) {
-      console.log("faltan datos");
       throw new Error("Faltan datos");
 
     }
@@ -116,11 +125,27 @@ const login = async (req, res) => {
     if (user.password !== password) {
       throw new Error("Contraseña incorrecta");
     }
+    const token = jwt.sign({email},secretKey,{expiresIn:"1h"})
     return res.json({
       access: true,
+      token:token
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+};
+
+const restoreUserHandler = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await restoreUserById(id);
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -130,4 +155,5 @@ module.exports = {
   putUserHandler,
   createUserHandler,
   login,
+  restoreUserHandler
 };

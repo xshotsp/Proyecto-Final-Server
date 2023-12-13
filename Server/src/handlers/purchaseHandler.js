@@ -16,6 +16,7 @@ const createPurchaseHandler = async (req, res) => {
       
       const response = await getPurchaseByEmail(email);
       res.status(200).send(response);
+
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
