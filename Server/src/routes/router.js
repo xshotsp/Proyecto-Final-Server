@@ -39,7 +39,7 @@ router.put("/cart",updateRelationHandler)
 router.delete("/cart/:email",deleteRelationHandler)
 router.post("/history", createPurchaseHandler)
 router.get("/purchase/:email", purchaseByUserHandler)
-router.get("/purchase/all", purchaseHandler)
+router.get("/purchases/all", purchaseHandler)
 
 
 module.exports = router;
