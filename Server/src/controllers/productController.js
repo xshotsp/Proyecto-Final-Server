@@ -42,9 +42,7 @@ const getProductByName = async (name) => {
     },
   });
   if (productDB.length === 0) {
-    return [
-      { message: "No products found matching your search." },
-    ];
+    return [{ message: "No products found matching your search." }];
   }
 
   return productDB;
@@ -53,7 +51,6 @@ const getProductByName = async (name) => {
 /************************************************************************* */
 // se usa para crear el producto
 const createProducts = async (productData) => {
-  
   try {
     let { name, image, price, colour, additionalImage, brands } = productData;
     //let { name, image, price, colour } = productData;
@@ -66,18 +63,20 @@ const createProducts = async (productData) => {
     }
 
     // CLOUDINARY
-    if (image){
+    if (image) {
       const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
       image = cloudinaryUpload.secure_url;
     }
 
-    if (additionalImage.length !==0){
-      for (let i=0; i<additionalImage.length; i++) {
-        const cloudinaryUpload = await cloudinary.uploader.upload(`${additionalImage[i]}`);
+    if (additionalImage.length !== 0) {
+      for (let i = 0; i < additionalImage.length; i++) {
+        const cloudinaryUpload = await cloudinary.uploader.upload(
+          `${additionalImage[i]}`
+        );
         additionalImage[i] = cloudinaryUpload.secure_url;
       }
     }
-   
+
     console.log(additionalImage);
     console.log("controller");
     const newProduct = await Product.create({
@@ -119,12 +118,13 @@ const deleteProductById = async (id) => {
 
 /**************************************************************************** */
 // restaurar del borrado lógico
-const restoreProductById = async (id, newData ) => {
+const restoreProductById = async (id) => {
   try {
     const restoredProduct = await Product.findByPk(id);
 
-    await restoredProduct.update(newData);
-    
+    restoredProduct.active = !restoredProduct.active;
+    await restoredProduct.save();
+
     return restoredProduct;
   } catch (error) {
     throw error;
@@ -166,7 +166,6 @@ const updateProductById = async (id, newData) => {
 /*************************************************************************************** */
 
 const getProductswithFilter = async (req, res, next) => {
-  
   // Obtén los parámetros de consulta de la URL
   const { name, brand, colour, price } = req.query;
 
@@ -176,15 +175,14 @@ const getProductswithFilter = async (req, res, next) => {
 
   //Selecciona aquellos activos
 
-  // whereConditions.active = true;
-  
+ //whereConditions.active = true;
+
   // Agrega condiciones al objeto según los parámetros de consulta
   if (name) {
     whereConditions.name = {
       [Op.iLike]: `%${name}%`,
     };
   }
-
 
   if (colour) {
     whereConditions.colour = {
@@ -199,35 +197,32 @@ const getProductswithFilter = async (req, res, next) => {
     } else if (price === "Lowest") {
       order.push(["price", "ASC"]);
     }
-    
-    console.log(whereConditions)
+
+    console.log(whereConditions);
     let products = await Product.findAll({
       where: whereConditions, // Aplica las condiciones de filtro
       order: order, // Aplica el ordenamiento por precio
       include: {
         model: Brand,
         through: { attributes: [] },
-        }
+      },
     });
 
     //console.log (products)
-    
+
     if (brand) {
-        products = products?.filter((prod) => prod.brands[0].name === brand );
+      products = products?.filter((prod) => prod.brands[0].name === brand);
     }
 
+    if (products.length === 0)
+      products = [{ message: "No products found matching your search." }];
 
-    if (products.length === 0) products = [{message: "No products found matching your search."}]
-
-    
     res.paginatedResults = products;
     next();
-
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
 };
-
 
 module.exports = {
   getProductswithFilter,
