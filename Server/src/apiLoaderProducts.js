@@ -30,9 +30,9 @@ const apiLoaderProducts = async () => {
         //additionalImageUrls,
         brandName,
       }) => {
-
         //  const colorTranslated = await translate(colour)
-        const colorCapitalized = await capitalizeString(colour)
+        const colorCapitalized = await capitalizeString(colour);
+
         const [product] = await Product.findOrCreate({
           where: {
             name,
@@ -40,14 +40,13 @@ const apiLoaderProducts = async () => {
             // image: imageUrl,
 
             price: price.current.value.toFixed(2),
-            colour:colorCapitalized,
+            colour: colorCapitalized,
             active: true,
-            quantity: Math.floor(Math.random()*20 + 1)
             //additionalImage: additionalImageUrls,
           },
         });
 
-        const brandCapitalized = await capitalizeString(brandName)
+        const brandCapitalized = await capitalizeString(brandName);
 
         // Busca o crea la marca
         const [brand] = await Brand.findOrCreate({
