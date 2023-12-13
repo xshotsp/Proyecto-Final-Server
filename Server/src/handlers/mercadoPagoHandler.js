@@ -49,7 +49,7 @@ const successfulPurchase = (req, res) =>{
         const {payment_id} = req.query;
 
         console.log(req);
-        res.status(200).send("Pago aprobado")
+        res.status(200).send("Pago Aprobado")
     } catch (error) {
         res.status(400).json({error: error.message})
     }
