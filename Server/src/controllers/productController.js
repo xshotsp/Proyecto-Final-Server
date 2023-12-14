@@ -134,8 +134,9 @@ const restoreProductById = async (id) => {
 /******************************************************************************* */
 // Para editar o actualizar un producto con un id especifico
 const updateProductById = async (id, newData) => {
+  console.log(newData.subtract);
   try {
-    let { name, image, price, colour, quantity } = newData;
+    let { name, image, price, colour, quantity, subtract } = newData;
     const productToUpdate = await Product.findByPk(id);
 
     if (!productToUpdate) {
@@ -143,12 +144,29 @@ const updateProductById = async (id, newData) => {
     }
 
     // CLOUDINARY
-    if (image){
+    if (image) {
       const cloudinaryUpload = await cloudinary.uploader.upload(`${image}`);
       image = cloudinaryUpload.secure_url;
-     }
+    }
 
     // Actualiza los campos del producto con los nuevos datos
+    if (subtract) {
+      // corrige el nombre aquí
+      await productToUpdate.update({
+        id,
+        name,
+        image,
+        price,
+        colour,
+        quantity: productToUpdate.quantity - subtract,
+        // additionalImage,
+      });
+      if (productToUpdate.quantity === 0) {
+        productToUpdate.active = false;
+        await productToUpdate.save();
+      }
+      return productToUpdate;
+    }
 
     await productToUpdate.update({
       id,
@@ -156,8 +174,8 @@ const updateProductById = async (id, newData) => {
       image,
       price,
       colour,
-      quantity
-      //additionalImage,
+      quantity,
+      // additionalImage,
     });
 
     return productToUpdate;
@@ -165,6 +183,7 @@ const updateProductById = async (id, newData) => {
     throw error;
   }
 };
+
 /*************************************************************************************** */
 
 const getProductswithFilter = async (req, res, next) => {
@@ -177,7 +196,7 @@ const getProductswithFilter = async (req, res, next) => {
 
   //Selecciona aquellos activos
 
- //whereConditions.active = true;
+  //whereConditions.active = true;
 
   // Agrega condiciones al objeto según los parámetros de consulta
   if (name) {
