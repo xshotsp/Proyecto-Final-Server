@@ -18,7 +18,7 @@ cloudinary.config({
 });
 
 conn
-  .sync({ force: true })
+  .sync({ force: false})
   .then(() => {
     // Cambia la llamada a server.listen por app.listen
     server.listen(PORT, "0.0.0.0", async () => {
