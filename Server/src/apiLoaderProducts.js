@@ -27,7 +27,7 @@ const apiLoaderProducts = async () => {
         imageUrl,
         price,
         colour,
-        //additionalImageUrls,
+        additionalImageUrls,
         brandName,
       }) => {
         //  const colorTranslated = await translate(colour)
@@ -42,7 +42,7 @@ const apiLoaderProducts = async () => {
             price: price.current.value.toFixed(2),
             colour: colorCapitalized,
             active: true,
-            //additionalImage: additionalImageUrls,
+            additionalImage: additionalImageUrls,
           },
         });
 

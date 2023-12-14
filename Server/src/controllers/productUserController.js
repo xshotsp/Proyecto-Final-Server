@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const { User, Product, UserProduct } = require("../db");
 
 const userProductController = {
@@ -87,31 +88,36 @@ const userProductController = {
     }
   },
 
-  // Eliminar una relación usuario-producto
-  async deleteRelation({ email }) {
+  // Eliminar relación usuario-producto
+  async deleteRelation({ email, productsId }) {
     try {
-      const result = await UserProduct.destroy({ where: { userEmail: email } });
-
-      if (result === 0) {
-        throw new Error(
-          "No user-product connections found to delete."
-        );
+      if(email && !productsId){
+        await UserProduct.destroy({where:{userEmail:email}})
+        return "Deleted shopping cart.";
       }
+      const deletionPromises = productsId.map((itemId) => {
+        return UserProduct.destroy({
+          where: {
+            userEmail: email,
+            productId: itemId,
+          },
+        });
+      });
+
+      await Promise.all(deletionPromises);
 
       return "Deleted shopping cart.";
     } catch (error) {
-      console.error(
-        "Failed to delete user-product connections.",
-        error
-      );
+      console.error("Failed to delete user-product connections.", error);
       throw new Error("Error internal server.");
     }
   },
+
   async getAllProductsUser({ email }) {
     try {
       const user = await User.findOne({
         where: { email: email },
-        include: "products"
+        include: "products",
       });
 
       if (user === 0) {
@@ -120,10 +126,7 @@ const userProductController = {
 
       return user;
     } catch (error) {
-      console.error(
-        "Failed to delete user-product relationships:",
-        error
-      );       
+      console.error("Failed to delete user-product relationships", error);
       throw new Error("Error internal server.");
     }
   },

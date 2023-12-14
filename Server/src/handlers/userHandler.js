@@ -105,7 +105,7 @@ const createUserHandler = async (req, res) => {
         <h2>${name}&nbsp;${lastname}</h2>
         <p>Thank you for choosing our online store QUIRKZ</p>
         <p style="font-size: 16px; color: #0074d9;">
-        To go to the page, click <a href="http://localhost:5173" style="text-decoration: none; color: #ff4136; font-weight: bold;">here</a>.
+        To go to the page, click  <a href="https://quirkzmain.vercel.app" style="text-decoration: none; color: #ff4136; font-weight: bold;">Here</a>.
     </p>`,
       });
 
